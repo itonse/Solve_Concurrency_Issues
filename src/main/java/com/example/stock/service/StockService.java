@@ -14,8 +14,12 @@ public class StockService {
         this.stockRepository = stockRepository;
     }
 
-    @Transactional
-    public void decrease(Long id, Long quantity) {
+    /**
+     * @Transactional이 붙으면, 여러 스레드가 동시에 decrease 메서드에 접근하여 동시성 문제가 발생
+     * synchronized를 사용하면 decrease 메서드에 한 번에 하나의 스레드만 접근
+     */
+    //@Transactional
+    public synchronized void decrease(Long id, Long quantity) {    // synchronized 적용: 이 메소드는 한 개의 스레드만 접근 가능
 
         Stock stock = stockRepository.findById(id).orElseThrow();    // Stock 조회
         stock.decrease(quantity);   // 재고를 감소시킨 뒤
